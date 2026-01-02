@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HÁI LỘC ĐẦU NĂM</title>
+
+  <style>
+  /* ===== NÚT 🎁 ===== */
+  .popup-toggle-btn {
+    position: fixed;
+    bottom: 10%;
+    left: 0;
+    background-color: #d60000;
+    color: white;
+    font-size: 22px;
+    padding: 10px 14px;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    z-index: 100000;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    pointer-events: auto;
+  }
+
+  /* ===== LỚP NỀN POPUP ===== */
+  .popup-widget * { box-sizing: border-box; }
+  .popup-widget {
+    position: fixed;
+    inset: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    font-family: Arial, sans-serif;
+    pointer-events: auto;
+  }
+
+  /* ===== HỘP POPUP CHÍNH ===== */
+  .popup-form {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-width: 920px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+  }
+
+  /* ẢNH NỀN CHÌM CHỈ BÊN TRÁI */
+  .popup-form::before{ content:none !important; }
+
+  .qcads-left{ position: relative; }
+  .qcads-left::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: url('https://www.ngocanhcm.vn/data/category/thongtinweb.png') no-repeat left center;
+    background-size: 115%;
+    opacity: 0.12;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .qcads-left > *{ position: relative; z-index: 1; }
+
+  /* ===== LAYOUT 2 CỘT ===== */
+  .qcads-popup-grid{
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .qcads-left{
+    flex: 1 1 56%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 560px;
+  }
+  .qcads-right{
+    flex: 1 1 44%;
+    min-width: 0;
+    border-left: 1px solid rgba(0,0,0,0.08);
+    padding-left: 18px;
+  }
+
+  /* ===== TIÊU ĐỀ + MÔ TẢ ===== */
+  .popup-form h2, .popup-form p {
+    text-align: center;
+    font-weight: 700;
+  }
+  .popup-form h2 { font-size: 18px; color: #222; margin: 0 0 8px; }
+  .popup-form p { font-size: 14px; color: #d62828; margin: 0 0 16px; }
+
+  /* ===== INPUT ===== */
+  .popup-form input[type="text"], .popup-form input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: transparent;
+    color: #000;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .popup-form input::placeholder { color: #111; opacity: 1; }
+  .popup-form input[type="checkbox"] { margin-right: 6px; }
+  .popup-form label {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  /* ===== NÚT SUBMIT ===== */
+  .popup-form button {
+    background: red;
+    color: white;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  /* Hàng nút: trái – phải */
+  .popup-form .form-actions{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .popup-form .form-actions #submitBtn{ margin-top: 0; }
+  .popup-form .form-actions .dismiss-link{
+    margin-left: 0;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ===== NÚT ĐÓNG ===== */
+  .close-btn {
+    position: absolute;
+    top: 12px; right: 16px;
+    cursor: pointer;
+    font-size: 22px;
+    color: #666;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  /* ===== FOOTER ===== */
+  .site-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #777;
+    padding: 10px 8px;
+    border-top: 1px solid #ddd;
+    margin-top: auto;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(2px);
+  }
+  .site-footer strong { color: #111; }
+
+  /* ===== VÒNG QUAY ===== */
+  #wheelContainer { display: none; margin-top: 10px; text-align: center; }
+  #wheel {
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto;
+    border: 6px solid #fff;
+    box-shadow: 0 0 25px rgba(255,255,255,0.4), inset 0 0 35px rgba(255,255,255,0.2);
+    transition: transform 5s cubic-bezier(.23,1,.32,1);
+  }
+  .wheel-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+  }
+  .arrow {
+    position: absolute;
+    top: -20px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 26px solid #ffde59;
+    filter: drop-shadow(0 0 6px #fff);
+    z-index: 15;
+  }
+  .center-button {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ff007a, #ffde59);
+    border: 4px solid white;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 20px #ff007a, 0 0 40px #ffde59, inset 0 0 10px rgba(255,255,255,.5);
+    user-select: none; z-index: 10;
+    transition: all .3s ease;
+  }
+  .center-button:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 0 25px #ffde59, 0 0 55px #ff007a;
+  }
+  .center-button span { color: white; font-weight: bold; font-size: 14px; }
+  .center-button .pointer {
+    position: absolute; top: 4px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 15px solid #fff;
+    filter: drop-shadow(0 0 4px #fff);
+  }
+  #result {
+    margin-top: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    min-height: 28px;
+  }
+
+  /* ===== CỘT PHẢI ===== */
+  /* (FIX) bỏ dòng lỗi ".qcads-rightz" */
+  .qcads-right-card{
+    background: rgba(255,255,255,0.75);
+    border-radius: 12px;
+    padding: 14px 14px 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+  .qcads-hotline{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom: 10px;
+  }
+  .qcads-hotline .qcads-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+    font-weight: 800;
+  }
+  .qcads-hotline .qcads-pill .qcads-icon{
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: #1b5cff;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 16px;
+  }
+  .qcads-hotline .qcads-pill .qcads-text{
+    line-height: 1.1;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 800;
+    color:#1a1a1a;
+  }
+  .qcads-hotline .qcads-pill .qcads-text b{
+    display:block;
+    font-size: 16px;
+    letter-spacing: .3px;
+    color:#0a2a7a;
+  }
+  .qcads-right ul{
+    list-style: none;
+    margin: 10px 0 14px;
+    padding: 0;
+  }
+  .qcads-right li{
+    margin: 8px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color:#222;
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .qcads-right li .dot{
+    width: 18px;
+    flex: 0 0 18px;
+    line-height: 1.2;
+  }
+
+  .qcads-logo{ display:block; padding: 14px 0 8px; }
+  .qcads-logo .logo-box{
+    width: 100%;
+    height: 180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+  .qcads-logo .logo-box img{
+    display:block;
+    max-width:100%;
+    max-height:100%;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+  }
+
+  .qcads-right-hot{
+    position: relative;
+    margin-top: 14px;
+    padding: 14px 12px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #d60000;
+    background: linear-gradient(135deg,#fff5f5,#ffffff,#fff5f5);
+    border: 1px dashed rgba(214,0,0,.55);
+    box-shadow: 0 8px 22px rgba(214,0,0,.18), inset 0 0 0 1px rgba(214,0,0,.15);
+    overflow: hidden;
+  }
+  .qcads-right-hot::before{
+    content: "🔥NHẬN LỘC ĐẦU NĂM🔥";
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    animation: qcadsHotBlink 1.4s infinite;
+  }
+  .qcads-right-hot::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-70%;
+    width:60%;
+    height:100%;
+    background: linear-gradient(120deg,transparent,rgba(255,255,255,0.75),transparent);
+    animation: qcadsHotShine 3s infinite;
+  }
+  @keyframes qcadsHotBlink{ 0%,100%{opacity:1} 50%{opacity:.55} }
+  @keyframes qcadsHotShine{ 0%{left:-70%} 100%{left:120%} }
+
+  /* HIỆU ỨNG QUÀ 🎁 */
+  .qcads-right li .dot{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width: 22px;
+    height: 22px;
+    border-radius: 8px;
+    background: rgba(214,0,0,0.08);
+    box-shadow: 0 0 0 rgba(214,0,0,0);
+    animation: qcadsGiftPulse 1.2s infinite;
+  }
+  .qcads-right li:nth-child(2) .dot{ animation-delay: .15s; }
+  .qcads-right li:nth-child(3) .dot{ animation-delay: .30s; }
+  .qcads-right li:nth-child(4) .dot{ animation-delay: .45s; }
+  .qcads-right li:nth-child(5) .dot{ animation-delay: .60s; }
+  @keyframes qcadsGiftPulse{
+    0%{transform:translateY(0) scale(1); box-shadow:0 0 0 rgba(214,0,0,0)}
+    40%{transform:translateY(-1px) scale(1.08); box-shadow:0 10px 18px rgba(214,0,0,.15)}
+    70%{transform:translateY(0) scale(1.02)}
+    100%{transform:translateY(0) scale(1); box-shadow:0 0 0 rgba(214,0,0,0)}
+  }
+
+  /* ===== THÔNG BÁO CUSTOM (THAY alert) ===== */
+  #qcadsAlert{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200000;
+  }
+  .qcads-alert-box{
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 16px 14px;
+    max-width: 420px;
+    width: 92%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,.25);
+  }
+  .qcads-alert-box h3{
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #d60000;
+  }
+  .qcads-alert-box p{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #222;
+  }
+  .qcads-alert-box button{
+    margin-top: 12px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    background: #d60000;
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  /* =====================================================
+     FIX CHẮC CHẮN: ẨN CỘT PHẢI TRÊN MOBILE (ĐẶT CUỐI CÙNG)
+     ===================================================== */
+  @media screen and (max-width: 768px){
+    #qcadsPopup .qcads-right,
+    #qcadsPopup .qcads-popup-grid > .qcads-right{
+      display: none !important;
+      width: 0 !important;
+      max-width: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    #qcadsPopup .qcads-popup-grid{
+      display: block !important;
+    }
+    #qcadsPopup .qcads-left{
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    #qcadsPopup .popup-form{
+      max-width: 92% !important;
+      padding: 16px !important;
+    }
+  }
+
+  .NAoverlay, .NAoverlay *{ box-sizing:border-box; }
+  .NAoverlay{
+    position: fixed; inset: 0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding: 18px;
+    background: rgba(0,0,0,.55);
+    z-index: 150000; /* cao hơn popup */
+  }
+  .NAoverlay.show{ display:flex; }
+
+  .NAmodal{
+    width: min(980px, 94vw);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 36px 120px rgba(0,0,0,.35);
+    overflow:hidden;
+    position: relative;
+  }
+  .NAmodal .NAclose{
+    position:absolute; top: 12px; right: 12px;
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,.10);
+    background: rgba(255,255,255,.92);
+    font-size: 20px;
+    cursor:pointer;
+    z-index: 5;
+  }
+
+  .NAheadBar{
+    padding: 16px 18px 10px;
+    text-align:center;
+    background: radial-gradient(900px 320px at 50% 0%, rgba(255,178,0,.25), transparent 55%),
+                linear-gradient(135deg, rgba(143,0,24,.08), rgba(255,45,85,.06));
+    border-bottom: 1px solid rgba(0,0,0,.06);
+  }
+  .NAheadBar .t1{
+    font-weight: 1000;
+    color:#8f0018;
+    letter-spacing:.6px;
+    font-size: 20px;
+  }
+  .NAheadBar .t2{
+    margin-top: 4px;
+    font-size: 16px;
+    color: rgba(0,0,0,.60);
+    font-weight: 700;
+  }
+
+  .NAbody{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 14px;
+  }
+  @media (max-width: 860px){
+    .NAmodal{ width:min(560px, 94vw); }
+    .NAbody{ grid-template-columns: 1fr; }
+  }
+
+  .NAleftPane{
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: linear-gradient(180deg, rgba(255,178,0,.14), rgba(255,255,255,.85));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    padding: 12px;
+    min-height: 360px;
+  }
+  .NAleftPane .lbl{
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .5px;
+    color: rgba(0,0,0,.55);
+  }
+  .NAmoneyCard{
+    margin-top: 10px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.9);
+    border: 1px solid rgba(255,178,0,.25);
+    height: 180px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position: relative;
+    overflow:hidden;
+  }
+  .NAmoneyCard img{
+    max-width: 92%;
+    max-height: 160px;
+    width:auto;
+    height:auto;
+    transform: rotate(-3deg);
+    filter: drop-shadow(0 22px 26px rgba(0,0,0,.18));
+  }
+  .NAshine{
+    position:absolute; inset:-40px;
+    background: linear-gradient(120deg, rgba(255,255,255,0), rgba(255,255,255,.7), rgba(255,255,255,0));
+    transform: translateX(-70%) rotate(18deg);
+    animation: NA_shine 1.8s ease-in-out infinite;
+    opacity:.55;
+    pointer-events:none;
+  }
+  @keyframes NA_shine{ 0%{transform:translateX(-70%) rotate(18deg)} 100%{transform:translateX(70%) rotate(18deg)} }
+
+  .NAamountPill{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg,#ffb200,#ffe29a);
+    color:#111;
+    font-weight: 1000;
+    box-shadow: 0 14px 26px rgba(0,0,0,.14);
+  }
+  .NAamountPill b{ font-size: 18px; letter-spacing:.4px; }
+
+  .NAactions{
+    margin-top: 12px;
+    display:flex;
+    justify-content:center;
+  }
+  .NAactions button{
+    border:0;
+    cursor:pointer;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-weight: 1000;
+    letter-spacing: .4px;
+    background: linear-gradient(135deg,#ffb200,#ffe29a);
+    color:#111;
+    box-shadow: 0 18px 36px rgba(0,0,0,.16);
+  }
+
+  .NArightPane{
+    border-radius: 16px;
+    overflow:hidden;
+    position: relative;
+    min-height: 360px;
+    background: #f7f7f7;
+    border: 1px solid rgba(0,0,0,.06);
+  }
+  .NAenvWrap{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow: visible;
+    --mx: 50%;
+    --my: 48%;
+    --mw: 56%;
+    --mh: 18%;
+  }
+  .NAenvImg{
+    width: min(260px, 72%) !important;
+    max-width: 260px !important;
+    height: auto;
+    display:block;
+    border-radius: 16px;
+    box-shadow: 0 26px 55px rgba(0,0,0,.22);
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+
+  .NAenvMouth{
+    position:absolute;
+    left: var(--mx);
+    top:  var(--my);
+    width: var(--mw);
+    height: var(--mh);
+    transform: translate(-50%,-50%);
+    pointer-events:none;
+    z-index: 6;
+    clip-path: polygon(10% 70%, 50% 10%, 90% 70%, 90% 100%, 10% 100%);
+  }
+  .NAflap{
+    position:absolute; inset:0;
+    transform-origin: 50% 18%;
+    transform: perspective(800px) rotateX(78deg);
+    opacity: 0;
+    background:
+      linear-gradient(180deg, rgba(255,215,120,.0), rgba(255,215,120,.18)),
+      radial-gradient(80% 120% at 50% 0%, rgba(255,255,255,.65), rgba(255,255,255,0));
+    filter: drop-shadow(0 18px 22px rgba(0,0,0,.25));
+    border-radius: 14px;
+  }
+  .NAinnerGlow{
+    position:absolute; inset:-12px -10px -18px;
+    background: radial-gradient(circle at 50% 40%, rgba(255,178,0,.60), rgba(255,178,0,0) 62%);
+    opacity: 0;
+    transform: scale(.92);
+    filter: blur(1px);
+  }
+  .NAenvWrap.opening .NAflap{ animation: NA_flapOpen .55s cubic-bezier(.2,.9,.2,1) forwards; }
+  .NAenvWrap.opening .NAinnerGlow{ animation: NA_glowIn .65s ease-out forwards; }
+  @keyframes NA_flapOpen{
+    0%   { opacity:0; transform: perspective(800px) rotateX(86deg) translateY(8px); }
+    20%  { opacity:1; }
+    100% { opacity:1; transform: perspective(800px) rotateX(16deg) translateY(-2px); }
+  }
+  @keyframes NA_glowIn{
+    0%   { opacity:0; transform: scale(.88); }
+    60%  { opacity:1; transform: scale(1.02); }
+    100% { opacity:.95; transform: scale(1); }
+  }
+
+  .NApopCash{
+    position:absolute;
+    left: var(--mx);
+    top:  var(--my);
+    transform: translate(-50%,-50%);
+    width: var(--mw);
+    height: var(--mh);
+    pointer-events:none;
+    z-index: 7;
+  }
+  .NApopCash img{
+    position:absolute;
+    left:50%;
+    bottom: -6px;
+    width: min(260px, 86%);
+    height:auto;
+    opacity: 0;
+    transform: translateX(-50%) translateY(44px) rotate(-10deg) scale(.92);
+    filter: drop-shadow(0 26px 34px rgba(0,0,0,.22));
+  }
+  .NAenvWrap.opening .NApopCash img{
+    animation: NA_popUp .70s cubic-bezier(.12,.9,.12,1) .12s forwards;
+  }
+  @keyframes NA_popUp{
+    0%   { opacity:0; transform: translateX(-50%) translateY(44px) rotate(-10deg) scale(.92); }
+    38%  { opacity:1; transform: translateX(-50%) translateY(-14px) rotate(-6deg) scale(1.05); }
+    70%  { opacity:1; transform: translateX(-50%) translateY(-8px)  rotate(-6deg) scale(1.01); }
+    100% { opacity:1; transform: translateX(-50%) translateY(-10px) rotate(-6deg) scale(1.02); }
+  }
+
+  .NAmoneyLayer, .NAsparkLayer{
+    position:absolute; inset:0;
+    pointer-events:none;
+    overflow: visible;
+    z-index: 8;
+  }
+  .NAcash{
+    position:absolute;
+    left: var(--sx); top: var(--sy);
+    width: var(--w);
+    height:auto;
+    opacity: 0;
+    transform: translate(-50%,-50%) scale(.72) rotate(0deg);
+    filter: drop-shadow(0 18px 24px rgba(0,0,0,.18));
+    border-radius: 12px;
+    animation: NA_fly 1.25s ease-out forwards;
+  }
+  .NAcoin{
+    position:absolute;
+    left: var(--sx); top: var(--sy);
+    width: var(--d); height: var(--d);
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff3c4 0%, #ffd166 30%, #ffb200 60%, #e39b00 100%);
+    border: 1px solid rgba(0,0,0,.10);
+    box-shadow: 0 18px 34px rgba(0,0,0,.16), inset 0 2px 8px rgba(255,255,255,.35);
+    opacity:0;
+    transform: translate(-50%,-50%) scale(.7);
+    animation: NA_fly 1.25s ease-out forwards;
+  }
+  .NAcoin:before{
+    content:"";
+    position:absolute; inset: 22%;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,.12);
+  }
+  .NAspark{
+    position:absolute;
+    left: var(--sx); top: var(--sy);
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,178,0,.95);
+    box-shadow: 0 0 22px rgba(255,178,0,.6), 0 0 46px rgba(255,178,0,.22);
+    opacity: 0;
+    transform: translate(-50%,-50%) scale(.6);
+    animation: NA_spark 0.95s ease-out forwards;
+  }
+  @keyframes NA_fly{
+    0%{ opacity:0; transform: translate(-50%,-50%) scale(.65) rotate(0deg); }
+    12%{ opacity:1; }
+    100%{ opacity:0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(var(--rot)); }
+  }
+  @keyframes NA_spark{
+    0%{ opacity:0; transform: translate(-50%,-50%) scale(.6); }
+    18%{ opacity:1; }
+    100%{ opacity:0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.05); }
+  }
+
+  /* VIEW THÔNG TIN (SAU NHẬN LÌ XÌ) */
+  .NAinfoBox{
+    padding: 16px 18px 18px;
+  }
+  .NAinfoBox .top1{
+    text-align:center;
+    font-weight:1000;
+    font-size: 13px;
+    color: rgba(0,0,0,.70);
+    letter-spacing:.4px;
+  }
+  .NAinfoBox .top2{
+    text-align:center;
+    font-weight:1000;
+    font-size: 13px;
+    margin-top: 4px;
+    color: rgba(143,0,24,.92);
+  }
+  .NAinfoBox .top3{
+    text-align:center;
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(0,0,0,.60);
+  }
+  .NAinfoBox .thanks1{
+    margin-top: 14px;
+    text-align:center;
+    font-weight:1000;
+    color: rgba(0,0,0,.70);
+  }
+  .NAinfoBox .thanks2{
+    margin-top: 4px;
+    text-align:center;
+    font-weight:1000;
+    color:#0a8f4a;
+  }
+  .NAinfoBox .codeLine{
+    margin-top: 10px;
+    text-align:center;
+    font-size: 13px;
+    color: rgba(0,0,0,.70);
+  }
+  .NAinfoBox .codeLine b{
+    display:inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg,#ffb200,#ffe29a);
+    color:#111;
+    box-shadow: 0 12px 26px rgba(0,0,0,.12);
+    letter-spacing:.8px;
+  }
+  .NAinfoBox .subNote{
+    margin-top: 8px;
+    text-align:center;
+    font-size: 11px;
+    color: rgba(0,0,0,.45);
+  }
+  .NAinfoBox .warn{
+    margin: 12px auto 0;
+    max-width: 860px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(0,0,0,.68);
+    padding: 12px;
+    border-radius: 14px;
+    background: rgba(255,178,0,.10);
+    border: 1px dashed rgba(255,178,0,.45);
+  }
+  .NAinfoBox .site{
+    margin-top: 12px;
+    text-align:center;
+    font-weight:1000;
+    color: rgba(0,0,0,.55);
+  }
+  .NAinfoBox .copy{
+    margin-top: 6px;
+    text-align:center;
+    font-size: 11px;
+    color: rgba(0,0,0,.42);
+  }
+  /* ===== Ô MÃ QUÀ TẶNG MÀU VÀNG ===== */
+.qcads-code-line{
+  margin-top:10px;
+  text-align:center;
+  font-weight:900;
+  font-size:15px;
+  color:#111;
+}
+
+.qcads-code-gold{
+  display:inline-block;
+  margin-left:6px;
+  padding:6px 12px;
+  border-radius:999px;
+  background: linear-gradient(135deg,#ffb200,#ffe29a);
+  color:#111;
+  letter-spacing:.8px;
+  box-shadow:0 10px 22px rgba(0,0,0,.15);
+}
+
+/* === FIX RIÊNG MOBILE – BAO LÌ XÌ + LAYOUT === */
+@media (max-width: 768px){
+
+  /* Thu nhỏ ảnh bao lì xì */
+  .NAenvImg{
+    width: 220px !important;
+    max-width: 85% !important;
+    transform: translateY(4px);
+  }
+
+  /* Giảm chiều cao khung trái */
+  .NAleftPane{
+    min-height: auto !important;
+    padding: 10px;
+  }
+
+  /* Giảm chiều cao khung phải */
+  .NArightPane,
+  .NAenvWrap{
+    min-height: 280px !important;
+  }
+
+  /* Giảm padding tổng thể */
+  .NAbody{
+    padding: 10px;
+    gap: 10px;
+  }
+
+  /* Nút nhận lì xì gọn hơn */
+  .NAactions button{
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+
+<!-- Nút bật popup -->
+<div class="popup-toggle-btn" id="qcadsGiftBtn">🎁</div>
+
+<!-- Popup chính -->
+<div class="popup-widget" id="qcadsPopup">
+  <div class="popup-form">
+    <span class="close-btn" title="Đóng" tabindex="0">×</span>
+
+    <div class="qcads-popup-grid">
+      <!-- CỘT TRÁI (GIỮ NGUYÊN FORM + VÒNG QUAY) -->
+      <div class="qcads-left">
+        <h2>🌸 KHAI XUÂN PHÁT LỘC🌸<br>KHỞI ĐỘNG NĂM MỚI CÙNG NGỌC ANH</h2>
+        <p>XE NGỌC ANH – UY TÍN - CHẤT LƯỢNG - GIÁ TỐT</p>
+
+        <form id="registerForm">
+          <input type="text" name="name" placeholder="Tên của Anh/Chị:*" required />
+          <input type="text" name="phone" placeholder="Số điện thoại:*" required />
+          <input type="text" name="address" placeholder="Địa chỉ liên hệ:*" required />
+          <input type="text" name="car" placeholder="Dòng xe quan tâm:*" required />
+          <select name="note" required style="width:100%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:8px; font-size:15px;">
+            <option value="">Cửa Hàng (Bắt Buộc nhập)</option>
+            <option>Phường 5</option>
+            <option>Phường 6</option>
+            <option>Phường 7</option>
+            <option>Phường 8</option>
+            <option>Thới Bình</option>
+            <option>U Minh</option>
+            <option>Cái Nước</option>
+            <option>Đầm Dơi</option>
+            <option>Trần Văn Thời</option>
+            <option>Năm Căn</option>
+          </select>
+          <label><input type="checkbox" required /> Tôi đồng ý với điều khoản của Xe Ngọc Anh</label>
+
+          <div class="form-actions">
+            <button type="submit" id="submitBtn">ĐĂNG KÝ NGAY</button>
+            <a class="dismiss-link" tabindex="0">Bữa khác nha!</a>
+          </div>
+        </form>
+
+        <!-- Vòng quay -->
+        <div id="wheelContainer">
+          <!-- (FIX) thêm id để ẩn đúng “ô đỏ” khi bấm NHẬN LÌ XÌ -->
+          <div class="wheel-container" id="qcadsWheelBox">
+            <div class="arrow"></div>
+            <canvas id="wheel" width="300" height="300"></canvas>
+            <div class="center-button" id="spinBtn" tabindex="0">
+              <div class="pointer"></div>
+              <span>Quay</span>
+            </div>
+          </div>
+          <div id="result"></div>
+
+          <!-- ✅ (ĐÃ SỬA) KẾT QUẢ CUỐI: ĐỔI "ẢNH 1" THÀNH "ẢNH 2" -->
+          <div id="qcadsFinalBox" style="display:none; margin-top:12px;">
+            <div style="text-align:center; font-weight:900; color:#0a8f4a; font-size:16px;">
+              🎉 Cảm Ơn Anh/Chị <span id="qcadsFinalName" style="color:#0a8f4a;"></span><br/>
+              ĐÃ THAM GIA CHƯƠNG TRÌNH😘
+            </div>
+
+                      <div class="qcads-code-line">
+            MÃ LÌ XÌ LÀ:
+            <span id="qcadsFinalCode" class="qcads-code-gold">NA000000</span>
+          </div>
+
+            <div id="qcadsFinalMoney"
+                 style="margin-top:6px; text-align:center; font-weight:1000; font-size:30px; color:#d60000;">
+              100.000đ
+            </div>
+
+            <div style="margin-top:8px; text-align:center; font-weight:900; color:#d60000; line-height:1.5;">
+              ANH CHỊ VUI LÒNG<br/>CHỤP MÀN HÌNH HOẶC
+              ĐỌC TÊN + SỐ ĐIỆN THOẠI<br/>KHI NHẬN LÌ XÌ TỪ CỬA HÀNG.
+            </div>
+
+            <div style="margin-top:10px; border-radius:14px; padding:12px; background:rgba(255,245,245,.85); border:2px dashed rgba(214,0,0,.35); color:#d60000; line-height:1.5; font-size:13px; font-weight:800;">
+              🔔 “Lì xì được quy đổi thành tiền mặt và được giảm giá trực tiếp khi mua xe.
+              Mã lì xì được QuangCaoAds lưu để đối chiếu thông tin.”
+            </div>
+          </div>
+          <!-- ✅ hết phần thay -->
+        </div>
+
+        <div class="site-footer">
+          © 2025 Bản quyền thuộc về <strong>QuangCaoAds</strong> | Thiết kế bởi<br><strong>MKT HLAds - Xe Ngọc Anh Cà Mau</strong>
+        </div>
+      </div>
+
+      <!-- CỘT PHẢI (GIỮ NGUYÊN) -->
+      <div class="qcads-right">
+        <div class="qcads-right-card">
+          <div class="qcads-hotline">
+            <div class="qcads-pill">
+              <div class="qcads-icon">☎</div>
+              <div class="qcads-text">
+                HOTLINE
+                <b>08888 58 200</b>
+              </div>
+            </div>
+          </div>
+
+          <ul>
+            <li><span class="dot">🚀</span><span>XE NGỌC ANH – CHÍNH HÃNG, GIÁ TỐT</span></li>
+            <li><span class="dot">🎁</span><span>Mua xe chuẩn – Giá tốt</span></li>
+            <li><span class="dot">🎁</span><span>Giao tận nhà toàn tỉnh</span></li>
+            <li><span class="dot">🎁</span><span>Quà tặng hấp dẫn – Trả góp duyệt nhanh</span></li>
+            <li><span class="dot">🎁</span><span>Ngọc Anh Thương hiệu uy tín 30 năm</span></li>
+          </ul>
+
+          <div class="qcads-logo">
+            <div class="logo-box">
+              <img src="https://bydthanhcong.vn/wp-content/uploads/2025/12/NGOC-ANH-LOGO-01-2048x1600.png" alt="Xe Ngọc Anh Logo">
+            </div>
+          </div>
+
+          <div class="qcads-right-hot">
+            Anh Chị Hãy để lại thông tin, để nhận lộc lì xì từ Ngọc Anh!
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- THÔNG BÁO CUSTOM -->
+<div id="qcadsAlert">
+  <div class="qcads-alert-box">
+    <h3>🎁 Thông báo</h3>
+    <p id="qcadsAlertText"></p>
+    <button type="button" id="qcadsAlertOk">Đã hiểu</button>
+  </div>
+</div>
+
+<!-- =========================
+     (MỚI) POPUP LÌ XÌ SAU QUAY
+     ========================= -->
+<div class="NAoverlay" id="NAoverlay" aria-hidden="true">
+  <div class="NAmodal" role="dialog" aria-modal="true">
+    <button class="NAclose" id="NAclose" aria-label="Đóng">×</button>
+
+    <div class="NAheadBar">
+      <div class="t1">HỆ THỐNG XE NGỌC ANH CÀ MAU</div>
+      <div class="t2">Chúc mừng Anh/Chị đã nhận được lì xì may mắn</div>
+    </div>
+
+    <!-- VIEW 1: LÌ XÌ -->
+    <div id="NAviewLixi">
+      <div class="NAbody">
+        <div class="NAleftPane">
+          <div class="lbl">Lì Xì Trị Giá</div>
+          <div class="NAmoneyCard">
+            <img id="NApreviewImg" alt="Tiền trúng" />
+            <div class="NAshine" aria-hidden="true"></div>
+          </div>
+          <div class="NAamountPill">+ <b id="NAwinValue">---</b></div>
+
+          <div class="NAactions">
+            <button type="button" id="NAclaimBtn">NHẬN LÌ XÌ Ngay</button>
+          </div>
+        </div>
+
+        <div class="NArightPane">
+          <div class="NAenvWrap" id="NAenvWrap">
+            <img class="NAenvImg" id="NAenvImg"
+                 src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSFCePVRvpboG6C2OU_z5yMr4v6Xdd1HxMHS8X-JIC9FTx0MCdFMwAPC836bNp5skUXUI86BQOeXhkNRMSHwVx4L4k-UvBv1xizpVDmDX20Ps7jheRQF-4TZ_O7WLFxy_4unQUz-ZFnwAwsnD7Myq5E5A0m0jIobsv9h-x6XUZVuOc2bW6unhmHBhdrWUB/s1890/bao%20l%C3%AC%20x%C3%AC.png"
+                 alt="Bao lì xì Ngọc Anh" />
+            <div class="NAenvMouth" aria-hidden="true">
+              <div class="NAflap"></div>
+              <div class="NAinnerGlow"></div>
+            </div>
+            <div class="NApopCash" id="NApopCash" aria-hidden="true"></div>
+            <div class="NAmoneyLayer" id="NAmoneyLayer" aria-hidden="true"></div>
+            <div class="NAsparkLayer" id="NAsparkLayer" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: THÔNG TIN/VOUCHER (SAU NHẬN LÌ XÌ) -->
+    <div id="NAviewInfo" style="display:none;">
+      <div class="NAinfoBox">
+        <div class="top1">🔥GIAO DIỆN NÂNG CẤP🔥</div>
+        <div class="top2">NÂNG TẦM TRẢI NGHIỆM QUÝ KHÁCH HÀNG</div>
+        <div class="top3"><b>XE NGỌC ANH</b> — UY TÍN • CHẤT LƯỢNG • GIÁ TỐT</div>
+
+        <div class="thanks1">CẢM ƠN ANH/CHỊ VẪN CÒN Ở LẠI</div>
+        <div class="thanks2">ĐÃ THAM GIA CHƯƠNG TRÌNH!</div>
+
+        <div class="codeLine">MÃ QUÀ TẶNG LÀ: <b id="NAvoucherCode">NA000000</b></div>
+        <div class="subNote">TẠI NGHĨA (DỰ PHÒNG)</div>
+
+        <div class="warn">
+          <b>ANH CHỊ VUI LÒNG CHỤP MÀN HÌNH HOẶC ĐỌC TÊN + SỐ ĐIỆN THOẠI</b><br/>
+          Lì Xì <b>Được quy đổi thành tiền mặt</b> và được áp dụng <b>khi mua xe</b>.
+          Mã Quà Tặng được Quản lý bời <b>QuangCaoAds</b> lưu để đối chiếu khi nhận thưởng.
+        </div>
+
+        <div class="site">www.ngocanhcm.vn</div>
+        <div class="copy">©2026 bản quyền thuộc về QuangCaoAds • MKT HLAAds • Xe Ngọc Anh Cà Mau</div>
+
+        <div class="NAactions" style="margin-top:14px;">
+          <button type="button" id="NAcloseInfoBtn">ĐÓNG</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script type="text/javascript">
+/* ====== URL WEB APP (EXEC) ====== */
+var QCADS_API_URL = "https://script.google.com/macros/s/AKfycbydtBgvbhMfpSCJr3SUct4PbgqynpizvkWjITKLDHRTuJ8DgkcVV7OAltvmzTjwVcLK4A/exec";
+
+/* ===== THÔNG BÁO CUSTOM ===== */
+function qcadsShowAlert(text){
+  var box = document.getElementById('qcadsAlert');
+  var t = document.getElementById('qcadsAlertText');
+  if (!box || !t) return;
+  t.innerText = text || '';
+  box.style.display = 'flex';
+}
+function qcadsCloseAlert(){
+  var box = document.getElementById('qcadsAlert');
+  if (!box) return;
+  box.style.display = 'none';
+}
+(function(){
+  var ok = document.getElementById('qcadsAlertOk');
+  if (ok) ok.addEventListener('click', qcadsCloseAlert);
+})();
+
+/* ====== POPUP OPEN/CLOSE ====== */
+window.showPopup = function () {
+  var popup = document.getElementById('qcadsPopup') || document.querySelector('.popup-widget');
+  if (!popup) return;
+  popup.style.display = 'flex';
+
+  if (typeof confetti !== 'undefined') {
+    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+    setTimeout(function () {
+      confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+    }, 500);
+  }
+};
+window.qcadsHidePopup = function () {
+  var popup = document.getElementById('qcadsPopup') || document.querySelector('.popup-widget');
+  if (!popup) return;
+  popup.style.display = 'none';
+};
+
+/* =========================================================
+   (MỚI) LÌ XÌ UI: mở bao + tiền bay + view info khi nhận
+   ========================================================= */
+var NAoverlay = document.getElementById('NAoverlay');
+var NAclose = document.getElementById('NAclose');
+var NAclaimBtn = document.getElementById('NAclaimBtn');
+var NAcloseInfoBtn = document.getElementById('NAcloseInfoBtn');
+var NAviewLixi = document.getElementById('NAviewLixi');
+var NAviewInfo = document.getElementById('NAviewInfo');
+var NAwinValue = document.getElementById('NAwinValue');
+var NAvoucherCode = document.getElementById('NAvoucherCode');
+var NApopCash = document.getElementById('NApopCash');
+var NAmoneyLayer = document.getElementById('NAmoneyLayer');
+var NAsparkLayer = document.getElementById('NAsparkLayer');
+var NAenvWrap = document.getElementById('NAenvWrap');
+var NAenvImg = document.getElementById('NAenvImg');
+var NApPreview = document.getElementById('NApreviewImg');
+
+/* Ảnh tiền theo mệnh giá (anh thay link thật từng mức ở đây) */
+var MONEY_IMG = {
+  100: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjdcxmIOnrQguy_G1Ln25N3_So0hKebZ2qEneSTsBX8DaRIzgTg_V2NvGmXC4_b_rs6rsT07QM35YRb6nkr6khEhFkeqAnNsD_Tcg1oW-x6um0sWLPXOa_lecaqph9BSLaBiJjOsOaYtW4SWjTLfIDYVZNdXQEY_kKmD1SHaCBOWDSTFt5OOWfaLWzpd6qv/s1536/100k.png",
+  200: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjes3GbPHnsTxAm2tTfBmLQZkiI327VKw6vv7onx31tSOPBcBf4T5IiQaFF9DVSWy20EaexHceOckrSIVRNUnCrOftFZUD3Ko-rD51U57sHYVsywBLySfQ-msH6StcgjWJc_QxyaFaRvBjmOoUw3k33LyWi9FQ2N6P4M8LUJPQuyqKVkGmS1E-UrV2OTmLI/s320/200k.png",
+  300: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhvQd2K81XGqd06tDEkyW4HTOOURn91GCSJ5DTnRkaAFBmVxxyCgBJDJFM6kfJEexXcn4rXJBJM6_5jBIlSb9JiZCoubPbictI259rI2oZm98A5w1LGsX_VDbvcjBb6WzNFz5F8xpOn318Jc2b0Ml_3UM_TT10-ycqnnoEijutfHDygiJ5Juc2CG-eQDlRM/s320/300k.png",
+  400: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHt0a1b-41vLQ1mbToXkBQ1_5CjiycRmBhlvr9dJX1mwW4v7F6xJCiU8kwSEPj-ATSq6S3aMgCqOXZBT9PlUJbJTl_Y5_Qmqe6RYmgeRJ4jItD_7lErRIP59qzgvJhSSKed4EefZnz76Z9cprXBLcAd87B_KbCYQxpsBgyRbJCJT0RbICklORgeJ5VI9uA/s320/400k.png",
+  500: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjafzu3I-w00fG2izQYgvW2hZTu58smtRW8FVWLuysT31sUqulZ0lC_bV7ftK-DE-2DMFdPRfKrm44x9QNxDOgeTeHcjeCIqnU7i-pr_uf_CVFp4sjBxnnbPq1-SSOfW9MHP6Gq-NSoDTh6JKslkLh1TCwSkludIa5ddfiiTEsPS25Xb3CjX6Ga0jgvGdFG/s320/500k.png"
+};
+
+/* Map theo từng ô vòng quay (7 ô) -> mệnh giá lì xì 100K-500K */
+var LIXI_MAP = [100,200,300,400,500,2000,5000];
+
+/* vị trí miệng bao (tùy ảnh) */
+var mouthX = 0.50, mouthY = 0.48, mouthW = "56%", mouthH = "18%";
+
+function NA_rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function NA_show(){
+  if (!NAoverlay) return;
+  NAoverlay.classList.add('show');
+  NAoverlay.setAttribute('aria-hidden','false');
+}
+function NA_hide(){
+  if (!NAoverlay) return;
+  NAoverlay.classList.remove('show');
+  NAoverlay.setAttribute('aria-hidden','true');
+}
+
+function NA_showLixiView(){
+  NAviewInfo.style.display = "none";
+  NAviewLixi.style.display = "";
+}
+function NA_showInfoView(){
+  NAviewLixi.style.display = "none";
+  NAviewInfo.style.display = "";
+}
+
+function NA_clearFX(){
+  if (NAmoneyLayer) NAmoneyLayer.innerHTML = "";
+  if (NAsparkLayer) NAsparkLayer.innerHTML = "";
+  if (NApopCash) NApopCash.innerHTML = "";
+  if (NAenvWrap) NAenvWrap.classList.remove('opening');
+}
+
+function NA_getMouthPos(){
+  var rect = NAenvImg.getBoundingClientRect();
+  var wrapRect = NAenvWrap.getBoundingClientRect();
+  var x = (rect.left - wrapRect.left) + rect.width  * mouthX;
+  var y = (rect.top  - wrapRect.top ) + rect.height * mouthY;
+  return { x: x, y: y };
+}
+
+function NA_burst(win){
+  NAenvWrap.style.setProperty('--mx', (mouthX*100) + '%');
+  NAenvWrap.style.setProperty('--my', (mouthY*100) + '%');
+  NAenvWrap.style.setProperty('--mw', mouthW);
+  NAenvWrap.style.setProperty('--mh', mouthH);
+
+  NA_clearFX();
+  void NAenvWrap.offsetWidth;
+  NAenvWrap.classList.add('opening');
+
+  var url = MONEY_IMG[win] || "";
+  if (url) {
+    NApPreview.src = url;
+    NApPreview.style.opacity = "1";
+  } else {
+    NApPreview.removeAttribute("src");
+    NApPreview.style.opacity = "0";
+  }
+
+  if (url) {
+    var im = document.createElement('img');
+    im.src = url;
+    im.alt = "Tiền " + win + "K";
+    NApopCash.appendChild(im);
+  }
+
+  setTimeout(function(){
+    var pos = NA_getMouthPos();
+
+    var cashCount = (win >= 500) ? 16 : (win >= 400) ? 14 : (win >= 300) ? 12 : 10;
+    var coinCount = (win >= 500) ? 22 : 18;
+    var sparkCount = (win >= 500) ? 42 : 34;
+
+    var i, spread, wMin, wMax;
+
+    for(i=0;i<cashCount;i++){
+      if (!url) break;
+
+      var img = document.createElement('img');
+      img.className = 'NAcash';
+      img.src = url;
+
+      img.style.setProperty('--sx', pos.x + 'px');
+      img.style.setProperty('--sy', pos.y + 'px');
+
+      spread = (win >= 500) ? 220 : 185;
+      img.style.setProperty('--tx', NA_rand(-spread, spread) + 'px');
+      img.style.setProperty('--ty', NA_rand(-270, -85) + 'px');
+      img.style.setProperty('--rot', NA_rand(-320, 320) + 'deg');
+
+      wMin = (win >= 500) ? 74 : 68;
+      wMax = (win >= 500) ? 112 : 100;
+      img.style.setProperty('--w', NA_rand(wMin, wMax) + 'px');
+
+      img.style.animationDelay = (i * 0.022) + 's';
+      NAmoneyLayer.appendChild(img);
+    }
+
+    for(i=0;i<coinCount;i++){
+      var c = document.createElement('div');
+      c.className = 'NAcoin';
+      c.style.setProperty('--sx', pos.x + 'px');
+      c.style.setProperty('--sy', pos.y + 'px');
+      c.style.setProperty('--tx', NA_rand(-220, 220) + 'px');
+      c.style.setProperty('--ty', NA_rand(-250, -40) + 'px');
+      c.style.setProperty('--rot', NA_rand(-340, 340) + 'deg');
+      c.style.setProperty('--d', NA_rand(22, 46) + 'px');
+      c.style.animationDelay = (i * 0.015) + 's';
+      NAmoneyLayer.appendChild(c);
+    }
+
+    for(i=0;i<sparkCount;i++){
+      var s = document.createElement('div');
+      s.className = 'NAspark';
+      s.style.setProperty('--sx', pos.x + 'px');
+      s.style.setProperty('--sy', pos.y + 'px');
+      s.style.setProperty('--tx', NA_rand(-240, 240) + 'px');
+      s.style.setProperty('--ty', NA_rand(-290, 60) + 'px');
+      s.style.animationDelay = (i * 0.01) + 's';
+      NAsparkLayer.appendChild(s);
+    }
+
+    setTimeout(NA_clearFX, 2600);
+  }, 640);
+}
+
+function NA_makeVoucherCode(){
+  var num = String(NA_rand(0, 999999));
+  while (num.length < 6) num = "0" + num;
+  return "NA" + num;
+}
+
+if (NAclose) NAclose.addEventListener('click', function(){ NA_clearFX(); NA_hide(); });
+if (NAcloseInfoBtn) NAcloseInfoBtn.addEventListener('click', function(){ NA_clearFX(); NA_hide(); });
+
+function qcadsMoneyTextFromK(winK){
+  var k = Number(winK || 0);
+  if (!isFinite(k) || k <= 0) k = 100;
+  return (k * 1000).toLocaleString('vi-VN') + "đ";
+}
+
+/* ✅ (FIX) NHẤN “NHẬN LÌ XÌ NGAY” -> HIỆN KẾT QUẢ TRONG POPUP CHÍNH + ẨN “Ô ĐỎ” (VÒNG QUAY) */
+if (NAclaimBtn) NAclaimBtn.addEventListener('click', function(){
+  var box = document.getElementById('qcadsFinalBox');
+  var nameEl = document.getElementById('qcadsFinalName');
+  var codeEl = document.getElementById('qcadsFinalCode');
+  var moneyEl = document.getElementById('qcadsFinalMoney');
+
+  if (nameEl) nameEl.innerText = String(window.pendingUserName || "");
+  if (codeEl) codeEl.innerText = String(window.NA_LAST_CODE || "NA000000");
+  if (moneyEl) moneyEl.innerText = qcadsMoneyTextFromK(window.NA_LAST_WIN);
+
+  if (box) box.style.display = 'block';
+
+  /* ẨN ĐÚNG KHỐI VÒNG QUAY (Ô ĐỎ) */
+  var wheelBox = document.getElementById('qcadsWheelBox');
+  if (wheelBox) wheelBox.style.display = 'none';
+
+  /* (tuỳ chọn) ẩn dòng #result cho gọn */
+  var res = document.getElementById('result');
+  if (res) res.style.display = 'none';
+
+  NA_clearFX();
+  NA_hide();
+
+  setTimeout(function(){
+    if (box) box.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 50);
+});
+
+if (NAoverlay) {
+  NAoverlay.addEventListener('click', function(e){
+    if (e.target === NAoverlay) { NA_clearFX(); NA_hide(); }
+  });
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && NAoverlay && NAoverlay.classList.contains('show')) {
+    NA_clearFX(); NA_hide();
+  }
+});
+
+/* ====== VÒNG QUAY (GIỮ NGUYÊN) ====== */
+var canvas = document.getElementById("wheel");
+var ctx = canvas.getContext("2d");
+var size = canvas.width;
+var center = size / 2;
+
+var segments = [
+  "Lì Xì<br>100.000đ",
+  "Lì Xì<br>200.000đ",
+  "Lì Xì<br>300.000đ",
+  "Lì Xì<br>400.000đ",
+  "Lì Xì<br>500.000đ",
+  "Lì Xì<br>2.000.000đ",
+  "Lì Xì<br>5.000.000đ"
+];
+
+var colors = [
+ ["#A8E6CF","#56C596"],
+ ["#4FACFE","#0052D4"],
+ ["#FF9A9E","#F6416C"],
+ ["#FFE259","#FFA751"],
+ ["#43E97B","#11998E"],
+ ["#667EEA","#764BA2"],
+ ["#ff5ebc","#c7007a"]
+];
+
+var arc = (2 * Math.PI) / segments.length;
+var spinAngle = 0, spinning = false;
+
+/* ====== JSONP CALL (CHỐNG CORS) ====== */
+function qcadsJsonp(url, params, timeoutMs){
+  timeoutMs = timeoutMs || 12000;
+  return new Promise(function(resolve, reject){
+    var cbName = "qcads_cb_" + Date.now() + "_" + Math.floor(Math.random()*100000);
+    params = params || {};
+    params.callback = cbName;
+
+    var qs = [];
+    for (var k in params) {
+      if (!params.hasOwnProperty(k)) continue;
+      qs.push(encodeURIComponent(k) + "=" + encodeURIComponent(String(params[k])));
+    }
+
+    var script = document.createElement("script");
+    script.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + qs.join("&");
+
+    var timer = setTimeout(function(){
+      cleanup();
+      reject(new Error("timeout"));
+    }, timeoutMs);
+
+    window[cbName] = function(data){
+      cleanup();
+      resolve(data);
+    };
+
+    function cleanup(){
+      clearTimeout(timer);
+      if (script && script.parentNode) script.parentNode.removeChild(script);
+      try { delete window[cbName]; } catch(e){ window[cbName] = undefined; }
+    }
+
+    script.onerror = function(){
+      cleanup();
+      reject(new Error("network"));
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+function drawWheel() {
+  for (var i = 0; i < segments.length; i++) {
+    var angle = i * arc;
+    var grad = ctx.createLinearGradient(0, 0, size, size);
+    grad.addColorStop(0, colors[i][0]);
+    grad.addColorStop(1, colors[i][1]);
+    ctx.fillStyle = grad;
+
+    ctx.beginPath();
+    ctx.moveTo(center, center);
+    ctx.arc(center, center, center, angle, angle + arc, false);
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.rotate(angle + arc / 2);
+    ctx.fillStyle = "white";
+    ctx.font = "bold 16px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    var lines = segments[i].split("<br>");
+    var lineHeight = 18;
+    var textRadius = center - 45;
+
+    for (var j = 0; j < lines.length; j++) {
+      var lineY = (j - (lines.length - 1) / 2) * lineHeight;
+      ctx.fillText(lines[j].trim(), textRadius, lineY);
+    }
+    ctx.restore();
+  }
+}
+drawWheel();
+
+/* ====== XIN QUÀ TỪ API (ĐÃ TRỪ KHO TRÊN SHEET) ====== */
+function qcadsAllocPrizeFromApi() {
+  var form = document.getElementById("registerForm");
+  var phone = form && form.elements["phone"] ? form.elements["phone"].value.trim() : "";
+
+  var addressInput = document.querySelector('input[name="address"]');
+  var carInput = document.querySelector('[name="car"]');
+  var noteInput = document.querySelector('select[name="note"]');
+
+  var params = {
+    action: "alloc",
+    phone: phone,
+    name: window.pendingUserName || "",
+    address: addressInput ? addressInput.value.trim() : "",
+    car: carInput ? carInput.value.trim() : "",
+    note: noteInput ? noteInput.value.trim() : "",
+    coupon: window.pendingCouponCode || ""
+  };
+
+  return qcadsJsonp(QCADS_API_URL, params, 12000);
+}
+
+/* ====== QUAY: API -> QUAY ĐÚNG Ô -> HIỆN POPUP LÌ XÌ (MỚI) ====== */
+function spin() {
+  if (spinning) return;
+  spinning = true;
+
+  qcadsAllocPrizeFromApi()
+    .then(function(resp){
+      if (!resp || resp.success !== true) {
+        spinning = false;
+        qcadsShowAlert((resp && resp.message) ? resp.message : "Lỗi kết nối kho quà (API).");
+        return;
+      }
+
+      var selectedIndex = Number(resp.prize_id);
+      if (!isFinite(selectedIndex) || selectedIndex < 0 || selectedIndex >= segments.length) {
+        spinning = false;
+        qcadsShowAlert("Dữ liệu prize_id không hợp lệ.");
+        return;
+      }
+
+      var segmentDegree = 360 / segments.length;
+      var segmentCenterDegree = selectedIndex * segmentDegree + segmentDegree / 2;
+      var spins = Math.floor(Math.random() * 4 + 4);
+      var finalDegree = spins * 360 + (360 + 270 - segmentCenterDegree) % 360;
+      var finalRad = finalDegree * Math.PI / 180;
+      var duration = 4000;
+      var start = null;
+
+      function rotateWheel(timestamp) {
+        if (!start) start = timestamp;
+        var progress = timestamp - start;
+        var easing = 1 - Math.pow(1 - progress / duration, 3);
+        spinAngle = finalRad * easing;
+
+        ctx.clearRect(0, 0, size, size);
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(spinAngle);
+        ctx.translate(-center, -center);
+        drawWheel();
+        ctx.restore();
+
+        if (progress < duration) {
+          requestAnimationFrame(rotateWheel);
+        } else {
+          window.pendingSegment = segments[selectedIndex];
+          spinning = false;
+
+          var winMoney = LIXI_MAP[selectedIndex] || 100;
+          var vcode = window.pendingCouponCode || NA_makeVoucherCode();
+          window.NA_LAST_WIN = winMoney;
+          window.NA_LAST_CODE = vcode;
+
+          NA_showLixiView();
+          NAwinValue.innerText =
+          "Anh/Chị nhận được " +
+          (winMoney * 1000).toLocaleString('vi-VN') +
+          "đ";
+          NAvoucherCode.innerText = vcode;
+
+          NA_show();
+          setTimeout(function(){ NA_burst(winMoney); }, 160);
+        }
+      }
+
+      requestAnimationFrame(rotateWheel);
+    })
+    .catch(function(){
+      spinning = false;
+      qcadsShowAlert("Lỗi kết nối kho quà (API). Vui lòng thử lại.");
+    });
+}
+
+/* ====== BOOT ====== */
+function qcadsBoot() {
+  var closeBtn = document.querySelector('.popup-form .close-btn');
+  var dismissLink = document.querySelector('.popup-form .dismiss-link');
+  var form = document.getElementById('registerForm');
+  var wheelContainer = document.getElementById('wheelContainer');
+  var spinBtn = document.getElementById('spinBtn');
+  var giftBtn = document.getElementById('qcadsGiftBtn');
+
+  if (giftBtn) {
+    giftBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.showPopup();
+    }, true);
+  }
+
+  function hidePopup(){ window.qcadsHidePopup(); }
+  if (closeBtn) closeBtn.addEventListener('click', hidePopup);
+  if (dismissLink) dismissLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    hidePopup();
+  });
+
+  function isPhoneValid(phone){ return /^0\d{9}$/.test(phone); }
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var name = form.elements['name'].value.trim();
+      var phone = form.elements['phone'].value.trim();
+
+      if (!isPhoneValid(phone)) {
+        qcadsShowAlert('Số điện thoại không hợp lệ (phải có 10 số và bắt đầu bằng 0).');
+        form.elements['phone'].focus();
+        return;
+      }
+
+      var couponCode = 'NA' + Math.floor(100000 + Math.random() * 900000);
+      window.pendingUserName = name;
+      window.pendingCouponCode = couponCode;
+
+      form.style.display = 'none';
+      wheelContainer.style.display = 'block';
+
+      /* (FIX) nếu trước đó đã ẩn vòng quay khi NHẬN LÌ XÌ thì mở lại cho lượt mới */
+      var wheelBox = document.getElementById('qcadsWheelBox');
+      if (wheelBox) wheelBox.style.display = '';
+
+      var res = document.getElementById('result');
+      if (res) res.style.display = '';
+
+      if (res) res.innerText = '';
+    });
+  }
+
+  if (spinBtn) spinBtn.addEventListener('click', spin);
+
+  /* AUTO HIỆN POPUP */
+  window.showPopup();
+}
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  qcadsBoot();
+} else {
+  document.addEventListener('DOMContentLoaded', qcadsBoot);
+}
+</script>
+
+<script type="text/javascript">
+function qcadsHasPopupWidget(el) {
+  while (el && el !== document) {
+    if (el.className && typeof el.className === 'string' && el.className.indexOf('popup-widget') !== -1) return true;
+    el = el.parentNode;
+  }
+  return false;
+}
+var qcadsPopup = document.querySelector('.popup-widget');
+
+document.addEventListener('contextmenu', function (e) {
+  if (qcadsHasPopupWidget(e.target)) e.preventDefault();
+});
+document.addEventListener('keydown', function (e) {
+  if (!qcadsHasPopupWidget(e.target)) return;
+
+  var key = (e.key || '').toLowerCase();
+  var isCtrl = !!e.ctrlKey;
+  var forbidden = { u:1, s:1, c:1, x:1, i:1 };
+
+  if ((isCtrl && forbidden[key]) || e.key === 'F12') e.preventDefault();
+});
+if (qcadsPopup) {
+  qcadsPopup.style.userSelect = 'none';
+  qcadsPopup.addEventListener('copy', function (e) { e.preventDefault(); });
+  qcadsPopup.addEventListener('cut', function (e) { e.preventDefault(); });
+}
+</script>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  if (typeof confetti === 'undefined') return;
+
+  var fxCanvas = document.createElement('canvas');
+  fxCanvas.id = 'qcads-tet-fx';
+  fxCanvas.style.cssText =
+    'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:180000;';
+  document.body.appendChild(fxCanvas);
+
+  var myConfetti = confetti.create(fxCanvas, { resize: true, useWorker: true });
+
+  // đổi "🌸" -> "🌼", hoặc "💮"
+  var blossomShape = (myConfetti.shapeFromText)
+    ? myConfetti.shapeFromText({ text: '🌼', scalar: 1.15 })
+    : 'circle';
+
+  var rainTimer = null;
+  var fireTimer = null;
+
+  function blossomRainTick() {
+    myConfetti({
+      particleCount: 2,
+      angle: 90,
+      spread: 55,
+      startVelocity: 0,
+      ticks: 320,
+      origin: { x: Math.random(), y: -0.08 },
+      gravity: 0.33,
+      drift: (Math.random() - 0.5) * 0.7,
+      scalar: 1.05,
+      shapes: [blossomShape]
+    });
+  }
+
+  function fireworkBurst() {
+    var x = Math.random() * 0.78 + 0.11;
+    var y = Math.random() * 0.25 + 0.18;
+
+    myConfetti({
+      particleCount: 110,
+      startVelocity: 58,
+      spread: 360,
+      ticks: 240,
+      origin: { x: x, y: y },
+      scalar: 0.95,
+      colors: ['#ffde59', '#ff3b3b', '#ffd166', '#ffffff', '#ff9ad5']
+    });
+
+    myConfetti({
+      particleCount: 28,
+      startVelocity: 32,
+      spread: 220,
+      ticks: 180,
+      origin: { x: x, y: y },
+      scalar: 0.7,
+      colors: ['#fff7c2', '#ffffff']
+    });
+  }
+
+  function startTetFX() {
+    if (rainTimer || fireTimer) return;
+    rainTimer = setInterval(blossomRainTick, 120);
+    fireTimer = setInterval(fireworkBurst, 2300);
+  }
+
+  function stopTetFX() {
+    if (rainTimer) { clearInterval(rainTimer); rainTimer = null; }
+    if (fireTimer) { clearInterval(fireTimer); fireTimer = null; }
+    try {
+      var ctx = fxCanvas.getContext('2d');
+      ctx && ctx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+    } catch(e) {}
+  }
+
+  window.qcadsTetFX_start = startTetFX;
+  window.qcadsTetFX_stop  = stopTetFX;
+
+  var _show = window.showPopup;
+  window.showPopup = function () {
+    if (typeof _show === 'function') _show();
+    startTetFX();
+  };
+
+  var _hide = window.qcadsHidePopup;
+  window.qcadsHidePopup = function () {
+    if (typeof _hide === 'function') _hide();
+    stopTetFX();
+  };
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stopTetFX();
+    else {
+      var popup = document.getElementById('qcadsPopup');
+      if (popup && popup.style.display === 'flex') startTetFX();
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
