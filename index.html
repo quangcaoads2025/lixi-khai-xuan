@@ -1854,6 +1854,42 @@ if (qcadsPopup) {
   });
 
 })();
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+document.onkeydown = function(e) {
+    // F12
+    if (e.key === 'F12' || e.keyCode === 123) {
+        e.preventDefault();
+        alert("Không được phép!");
+        return false;
+    }
+
+    // Ctrl + U
+    if (e.ctrlKey && e.key.toUpperCase() === 'U') {
+        e.preventDefault();
+        alert("Không được phép!");
+        return false;
+    }
+
+    // Ctrl + Shift + (I, J, C)
+    if (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) {
+        e.preventDefault();
+        alert("Không được phép!");
+        return false;
+    }
+};
+
+(function() {
+    const styleTitle = 'font-size: 40px; font-weight: bold; color: red; text-shadow: 1px 1px 0px black;';
+    const styleMsg = 'font-size: 16px; color: #333;';
+
+    console.log('%cDừng lại!', styleTitle);
+    console.log('%cĐây là tính năng dành cho nhà phát triển. Nếu ai đó bảo bạn dán mã vào đây để kích hoạt tính năng hay hack tài khoản, đó là lừa đảo!', styleMsg);
+})();
+  
 </script>
 
 </body>
