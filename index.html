@@ -1068,9 +1068,8 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
 <script type="text/javascript">
+// LINK API CỦA BẠN (Hãy chắc chắn đây là link deployment mới nhất)
 var QCADS_API_URL = "https://script.google.com/macros/s/AKfycbzGm45NMLpQm0AjovNdE3mK5G1HEqPcrFtIK3Hdo5beP7wyuFLRMcnxjccr1y-CbWbCtw/exec";
 
 function qcadsShowAlert(text){
@@ -1123,17 +1122,20 @@ var NAenvWrap = document.getElementById('NAenvWrap');
 var NAenvImg = document.getElementById('NAenvImg');
 var NApPreview = document.getElementById('NApreviewImg');
 
+// --- CẤU HÌNH ẢNH ---
 var MONEY_IMG = {
   100: "https://bydthanhcong.vn/wp-content/uploads/2026/01/100.png",
   150: "https://bydthanhcong.vn/wp-content/uploads/2026/01/150.png",
   200: "https://bydthanhcong.vn/wp-content/uploads/2026/01/200.png",
-  250: "https://bydthanhcong.vn/wp-content/uploads/2026/01/250k.png",
-  500: "https://bydthanhcong.vn/wp-content/uploads/2026/01/500k.png",
-  Vali: "https://bydthanhcong.vn/wp-content/uploads/2026/01/250k.png",
-  TaiNghe: "https://bydthanhcong.vn/wp-content/uploads/2026/01/tainghe.png"
+  250: "https://bydthanhcong.vn/wp-content/uploads/2026/01/250.png",
+  500: "https://bydthanhcong.vn/wp-content/uploads/2026/01/500.png",
+  "Vali": "https://bydthanhcong.vn/wp-content/uploads/2026/01/250k.png", // Thay ảnh Vali nếu có
+  "TaiNghe": "https://bydthanhcong.vn/wp-content/uploads/2026/01/tainghe.png"
 };
 
-var LIXI_MAP = [100,150,200,250,500,Vali Yamaha,Tai Nghe Airpood];
+// --- CẤU HÌNH GIÁ TRỊ (Khớp thứ tự với segments) ---
+// Sửa lỗi: Dùng chuỗi ký tự cho quà hiện vật
+var LIXI_MAP = [100, 150, 200, 250, 500, "Vali", "TaiNghe"];
 
 var mouthX = 0.50, mouthY = 0.48, mouthW = "56%", mouthH = "18%";
 
@@ -1185,6 +1187,8 @@ function NA_burst(win){
   NAenvWrap.classList.add('opening');
 
   var url = MONEY_IMG[win] || "";
+  
+  // Xử lý ảnh preview
   if (url) {
     NApPreview.src = url;
     NApPreview.style.opacity = "1";
@@ -1193,71 +1197,71 @@ function NA_burst(win){
     NApPreview.style.opacity = "0";
   }
 
+  // Xử lý ảnh bay ra từ bao lì xì
   if (url) {
     var im = document.createElement('img');
     im.src = url;
-    im.alt = "Tiền " + win + "K";
+    im.alt = "Quà tặng";
     NApopCash.appendChild(im);
   }
 
-  setTimeout(function(){
-    var pos = NA_getMouthPos();
+  // Chỉ hiệu ứng bay tiền nếu trúng tiền (win là số)
+  if (typeof win === 'number') {
+      setTimeout(function(){
+        var pos = NA_getMouthPos();
+        var cashCount = (win >= 500) ? 16 : (win >= 400) ? 14 : (win >= 300) ? 12 : 10;
+        var coinCount = (win >= 500) ? 22 : 18;
+        var sparkCount = (win >= 500) ? 42 : 34;
 
-    var cashCount = (win >= 500) ? 16 : (win >= 400) ? 14 : (win >= 300) ? 12 : 10;
-    var coinCount = (win >= 500) ? 22 : 18;
-    var sparkCount = (win >= 500) ? 42 : 34;
+        var i, spread, wMin, wMax;
 
-    var i, spread, wMin, wMax;
-
-    for(i=0;i<cashCount;i++){
-      if (!url) break;
-
-      var img = document.createElement('img');
-      img.className = 'NAcash';
-      img.src = url;
-
-      img.style.setProperty('--sx', pos.x + 'px');
-      img.style.setProperty('--sy', pos.y + 'px');
-
-      spread = (win >= 500) ? 220 : 185;
-      img.style.setProperty('--tx', NA_rand(-spread, spread) + 'px');
-      img.style.setProperty('--ty', NA_rand(-270, -85) + 'px');
-      img.style.setProperty('--rot', NA_rand(-320, 320) + 'deg');
-
-      wMin = (win >= 500) ? 74 : 68;
-      wMax = (win >= 500) ? 112 : 100;
-      img.style.setProperty('--w', NA_rand(wMin, wMax) + 'px');
-
-      img.style.animationDelay = (i * 0.022) + 's';
-      NAmoneyLayer.appendChild(img);
-    }
-
-    for(i=0;i<coinCount;i++){
-      var c = document.createElement('div');
-      c.className = 'NAcoin';
-      c.style.setProperty('--sx', pos.x + 'px');
-      c.style.setProperty('--sy', pos.y + 'px');
-      c.style.setProperty('--tx', NA_rand(-220, 220) + 'px');
-      c.style.setProperty('--ty', NA_rand(-250, -40) + 'px');
-      c.style.setProperty('--rot', NA_rand(-340, 340) + 'deg');
-      c.style.setProperty('--d', NA_rand(22, 46) + 'px');
-      c.style.animationDelay = (i * 0.015) + 's';
-      NAmoneyLayer.appendChild(c);
-    }
-
-    for(i=0;i<sparkCount;i++){
-      var s = document.createElement('div');
-      s.className = 'NAspark';
-      s.style.setProperty('--sx', pos.x + 'px');
-      s.style.setProperty('--sy', pos.y + 'px');
-      s.style.setProperty('--tx', NA_rand(-240, 240) + 'px');
-      s.style.setProperty('--ty', NA_rand(-290, 60) + 'px');
-      s.style.animationDelay = (i * 0.01) + 's';
-      NAsparkLayer.appendChild(s);
-    }
-
-    setTimeout(NA_clearFX, 2600);
-  }, 640);
+        for(i=0;i<cashCount;i++){
+          if (!url) break;
+          var img = document.createElement('img');
+          img.className = 'NAcash';
+          img.src = url;
+          img.style.setProperty('--sx', pos.x + 'px');
+          img.style.setProperty('--sy', pos.y + 'px');
+          spread = (win >= 500) ? 220 : 185;
+          img.style.setProperty('--tx', NA_rand(-spread, spread) + 'px');
+          img.style.setProperty('--ty', NA_rand(-270, -85) + 'px');
+          img.style.setProperty('--rot', NA_rand(-320, 320) + 'deg');
+          wMin = (win >= 500) ? 74 : 68;
+          wMax = (win >= 500) ? 112 : 100;
+          img.style.setProperty('--w', NA_rand(wMin, wMax) + 'px');
+          img.style.animationDelay = (i * 0.022) + 's';
+          NAmoneyLayer.appendChild(img);
+        }
+        
+        // Thêm coin và spark tương tự...
+        for(i=0;i<coinCount;i++){
+           var c = document.createElement('div');
+           c.className = 'NAcoin';
+           c.style.setProperty('--sx', pos.x + 'px');
+           c.style.setProperty('--sy', pos.y + 'px');
+           c.style.setProperty('--tx', NA_rand(-220, 220) + 'px');
+           c.style.setProperty('--ty', NA_rand(-250, -40) + 'px');
+           c.style.setProperty('--rot', NA_rand(-340, 340) + 'deg');
+           c.style.setProperty('--d', NA_rand(22, 46) + 'px');
+           c.style.animationDelay = (i * 0.015) + 's';
+           NAmoneyLayer.appendChild(c);
+        }
+        for(i=0;i<sparkCount;i++){
+           var s = document.createElement('div');
+           s.className = 'NAspark';
+           s.style.setProperty('--sx', pos.x + 'px');
+           s.style.setProperty('--sy', pos.y + 'px');
+           s.style.setProperty('--tx', NA_rand(-240, 240) + 'px');
+           s.style.setProperty('--ty', NA_rand(-290, 60) + 'px');
+           s.style.animationDelay = (i * 0.01) + 's';
+           NAsparkLayer.appendChild(s);
+        }
+        setTimeout(NA_clearFX, 2600);
+      }, 640);
+  } else {
+      // Nếu là hiện vật, chỉ hiện hiệu ứng spark nhẹ hoặc kết thúc sớm
+      setTimeout(NA_clearFX, 2000);
+  }
 }
 
 function NA_makeVoucherCode(){
@@ -1269,10 +1273,17 @@ function NA_makeVoucherCode(){
 if (NAclose) NAclose.addEventListener('click', function(){ NA_clearFX(); NA_hide(); });
 if (NAcloseInfoBtn) NAcloseInfoBtn.addEventListener('click', function(){ NA_clearFX(); NA_hide(); });
 
-function qcadsMoneyTextFromK(winK){
-  var k = Number(winK || 0);
-  if (!isFinite(k) || k <= 0) k = 100;
-  return (k * 1000).toLocaleString('vi-VN') + "đ";
+// Hàm định dạng hiển thị kết quả
+function qcadsFormatResult(win) {
+    if (typeof win === 'number') {
+        // Nếu là số thì nhân 1000 và thêm "đ"
+        return (win * 1000).toLocaleString('vi-VN') + "đ";
+    } else {
+        // Nếu là chữ (Vali, TaiNghe) thì trả về tên hiển thị đẹp
+        if (win === "Vali") return "Vali Yamaha";
+        if (win === "TaiNghe") return "Tai Nghe Airpod";
+        return win;
+    }
 }
 
 if (NAclaimBtn) NAclaimBtn.addEventListener('click', function(){
@@ -1283,7 +1294,11 @@ if (NAclaimBtn) NAclaimBtn.addEventListener('click', function(){
 
   if (nameEl) nameEl.innerText = String(window.pendingUserName || "");
   if (codeEl) codeEl.innerText = String(window.NA_LAST_CODE || "NA000000");
-  if (moneyEl) moneyEl.innerText = qcadsMoneyTextFromK(window.NA_LAST_WIN);
+  
+  // Sửa lỗi hiển thị ở màn hình cuối cùng
+  if (moneyEl) {
+      moneyEl.innerText = qcadsFormatResult(window.NA_LAST_WIN);
+  }
 
   if (box) box.style.display = 'block';
 
@@ -1483,16 +1498,19 @@ function spin() {
           window.pendingSegment = segments[selectedIndex];
           spinning = false;
 
-          var winMoney = LIXI_MAP[selectedIndex] || 100;
+          var winMoney = LIXI_MAP[selectedIndex];
+          // Nếu winMoney là undefined thì gán mặc định 100 (phòng hờ)
+          if (winMoney === undefined) winMoney = 100;
+
           var vcode = window.pendingCouponCode || NA_makeVoucherCode();
           window.NA_LAST_WIN = winMoney;
           window.NA_LAST_CODE = vcode;
 
           NA_showLixiView();
-          NAwinValue.innerText =
-          "Anh/Chị nhận được " +
-          (winMoney * 1000).toLocaleString('vi-VN') +
-          "đ";
+          
+          // SỬA LỖI HIỂN THỊ KẾT QUẢ Ở POPUP
+          NAwinValue.innerText = "Anh/Chị nhận được " + qcadsFormatResult(winMoney);
+          
           NAvoucherCode.innerText = vcode;
 
           NA_show();
@@ -1573,139 +1591,6 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 } else {
   document.addEventListener('DOMContentLoaded', qcadsBoot);
 }
-</script>
-
-<script type="text/javascript">
-function qcadsHasPopupWidget(el) {
-  while (el && el !== document) {
-    if (el.className && typeof el.className === 'string' && el.className.indexOf('popup-widget') !== -1) return true;
-    el = el.parentNode;
-  }
-  return false;
-}
-var qcadsPopup = document.querySelector('.popup-widget');
-
-document.addEventListener('contextmenu', function (e) {
-  if (qcadsHasPopupWidget(e.target)) e.preventDefault();
-});
-document.addEventListener('keydown', function (e) {
-  if (!qcadsHasPopupWidget(e.target)) return;
-
-  var key = (e.key || '').toLowerCase();
-  var isCtrl = !!e.ctrlKey;
-  var forbidden = { u:1, s:1, c:1, x:1, i:1 };
-
-  if ((isCtrl && forbidden[key]) || e.key === 'F12') e.preventDefault();
-});
-if (qcadsPopup) {
-  qcadsPopup.style.userSelect = 'none';
-  qcadsPopup.addEventListener('copy', function (e) { e.preventDefault(); });
-  qcadsPopup.addEventListener('cut', function (e) { e.preventDefault(); });
-}
-</script>
-
-<script>
-(function () {
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) return;
-
-  if (typeof confetti === 'undefined') return;
-
-  var fxCanvas = document.createElement('canvas');
-  fxCanvas.id = 'qcads-tet-fx';
-  fxCanvas.style.cssText =
-    'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:180000;';
-  document.body.appendChild(fxCanvas);
-
-  var myConfetti = confetti.create(fxCanvas, { resize: true, useWorker: true });
-
-  // đổi "🌸" -> "🌼", hoặc "💮"
-  var blossomShape = (myConfetti.shapeFromText)
-    ? myConfetti.shapeFromText({ text: '🌼', scalar: 1.15 })
-    : 'circle';
-
-  var rainTimer = null;
-  var fireTimer = null;
-
-  function blossomRainTick() {
-    myConfetti({
-      particleCount: 2,
-      angle: 90,
-      spread: 55,
-      startVelocity: 0,
-      ticks: 320,
-      origin: { x: Math.random(), y: -0.08 },
-      gravity: 0.33,
-      drift: (Math.random() - 0.5) * 0.7,
-      scalar: 1.05,
-      shapes: [blossomShape]
-    });
-  }
-
-  function fireworkBurst() {
-    var x = Math.random() * 0.78 + 0.11;
-    var y = Math.random() * 0.25 + 0.18;
-
-    myConfetti({
-      particleCount: 110,
-      startVelocity: 58,
-      spread: 360,
-      ticks: 240,
-      origin: { x: x, y: y },
-      scalar: 0.95,
-      colors: ['#ffde59', '#ff3b3b', '#ffd166', '#ffffff', '#ff9ad5']
-    });
-
-    myConfetti({
-      particleCount: 28,
-      startVelocity: 32,
-      spread: 220,
-      ticks: 180,
-      origin: { x: x, y: y },
-      scalar: 0.7,
-      colors: ['#fff7c2', '#ffffff']
-    });
-  }
-
-  function startTetFX() {
-    if (rainTimer || fireTimer) return;
-    rainTimer = setInterval(blossomRainTick, 120);
-    fireTimer = setInterval(fireworkBurst, 2300);
-  }
-
-  function stopTetFX() {
-    if (rainTimer) { clearInterval(rainTimer); rainTimer = null; }
-    if (fireTimer) { clearInterval(fireTimer); fireTimer = null; }
-    try {
-      var ctx = fxCanvas.getContext('2d');
-      ctx && ctx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-    } catch(e) {}
-  }
-
-  window.qcadsTetFX_start = startTetFX;
-  window.qcadsTetFX_stop  = stopTetFX;
-
-  var _show = window.showPopup;
-  window.showPopup = function () {
-    if (typeof _show === 'function') _show();
-    startTetFX();
-  };
-
-  var _hide = window.qcadsHidePopup;
-  window.qcadsHidePopup = function () {
-    if (typeof _hide === 'function') _hide();
-    stopTetFX();
-  };
-
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) stopTetFX();
-    else {
-      var popup = document.getElementById('qcadsPopup');
-      if (popup && popup.style.display === 'flex') startTetFX();
-    }
-  });
-
-})();
 </script>
 
 </body>
