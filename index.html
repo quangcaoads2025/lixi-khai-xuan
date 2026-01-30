@@ -13,7 +13,6 @@
 <meta property="og:url" content="https://bydthanhcong.vn/wp-content/uploads/2026/01/gen-h-anhbiaquayso.jpg" />
 
   <style>
-  /* --- CSS GIAO DIỆN MỚI CHO FORM --- */
   .form-group {
     margin-bottom: 16px;
     text-align: left;
@@ -876,6 +875,80 @@
   letter-spacing:.8px;
   box-shadow:0 10px 22px rgba(0,0,0,.15);
 }
+
+  @media (max-width: 768px){
+
+    .NAmodal {
+      width: 94vw !important;
+      max-height: 90vh !important; 
+      overflow-y: auto !important; 
+      display: flex;
+      flex-direction: column;
+    }
+
+    .NAheadBar { padding: 10px 5px !important; }
+    .NAheadBar .t1 { font-size: 15px !important; margin-bottom: 2px; }
+    .NAheadBar .t2 { font-size: 12px !important; }
+
+    .NAleftPane {
+      min-height: auto !important;
+      padding: 10px !important;
+    }
+    .NAmoneyCard {
+      height: 110px !important;
+      margin-top: 5px !important;
+    }
+    .NAmoneyCard img {
+      max-height: 90px !important;
+    }
+    .NAamountPill {
+      margin-top: 8px !important;
+      padding: 5px 10px !important;
+    }
+    .NAamountPill b { font-size: 16px !important; }
+    .NAactions button {
+      padding: 8px 16px !important;
+      font-size: 13px !important;
+      margin-top: 0 !important;
+    }
+
+    .NArightPane,
+    .NAenvWrap {
+      min-height: 200px !important;
+    }
+    .NAenvImg {
+      width: 160px !important;
+      max-width: 80% !important;
+      transform: translateY(0) !important;
+    }
+
+    .NAbody {
+      padding: 10px !important;
+      gap: 10px !important;
+    }
+
+    #qcadsPopup .popup-form {
+      padding: 15px !important;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    #qcadsPopup h2 { font-size: 15px !important; margin-bottom: 5px !important; }
+    
+    .wheel-container { 
+      width: 260px !important; 
+      height: 260px !important; 
+      margin-top: 10px !important;
+    } 
+    #wheel { 
+      width: 260px !important; 
+      height: 260px !important; 
+    }
+    .center-button {
+      width: 70px !important;
+      height: 70px !important;
+    }
+    .center-button span { font-size: 12px !important; }
+  }
   </style>
 </head>
 
@@ -1314,7 +1387,7 @@ function qcadsFormatResult(win) {
         return (win * 1000).toLocaleString('vi-VN') + "đ";
     } else {
         // Nếu là chữ (Vali, TaiNghe) thì trả về tên hiển thị đẹp
-        if (win === "Vali") return "Vali Yamaha";
+        if (win === "Vali") return "Vali Cao Cấp";
         if (win === "TaiNghe") return "Tai Nghe Airpod";
         return win;
     }
@@ -1372,7 +1445,7 @@ var segments = [
   "Lì Xì<br>200.000đ",
   "Lì Xì<br>250.000đ",
   "Lì Xì<br>500.000đ",
-  "Vali<br>Yamaha",
+  "Vali<br>Cao Cấp",
   "Tai Nghe<br>Airpood"
 ];
 
