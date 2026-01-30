@@ -35,7 +35,7 @@
     color: #333;
     background: #fff;
     border: 1px solid #e0e0e0;
-    border-radius: 12px; /* Bo tròn giống mẫu */
+    border-radius: 12px;
     outline: none;
     transition: all 0.2s ease;
   }
@@ -55,7 +55,6 @@
     background-size: 1em;
   }
 
-  /* --- CÁC CSS CŨ GIỮ NGUYÊN --- */
   .popup-toggle-btn {
     position: fixed;
     bottom: 10%;
@@ -88,7 +87,7 @@
   .popup-form {
     background: #ffffff;
     padding: 24px;
-    border-radius: 16px; /* Bo cong hơn xíu */
+    border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     max-width: 920px;
     width: 100%;
@@ -163,7 +162,6 @@
     background: #b00000;
   }
 
-  /* Hàng nút: trái – phải */
   .popup-form .form-actions{
     display: flex;
     align-items: center;
@@ -269,7 +267,6 @@
     min-height: 28px;
   }
 
-  /* ===== CỘT PHẢI ===== */
   .qcads-right-card{
     background: rgba(255,255,255,0.75);
     border-radius: 12px;
@@ -499,15 +496,22 @@
     overflow:hidden;
     position: relative;
   }
-  .NAmodal .NAclose{
-    position:absolute; top: 12px; right: 12px;
-    width: 40px; height: 40px;
+  .NAmodal .NAclose {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 30px;
+    height: 30px;
     border-radius: 12px;
     border: 1px solid rgba(0,0,0,.10);
     background: rgba(255,255,255,.92);
-    font-size: 20px;
-    cursor:pointer;
+    font-size: 16px;
+    line-height: 28px;
+    cursor: pointer;
     z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .NAheadBar{
@@ -1228,7 +1232,6 @@ var NAenvWrap = document.getElementById('NAenvWrap');
 var NAenvImg = document.getElementById('NAenvImg');
 var NApPreview = document.getElementById('NApreviewImg');
 
-// --- CẤU HÌNH ẢNH ---
 var MONEY_IMG = {
   100: "https://bydthanhcong.vn/wp-content/uploads/2026/01/100.png",
   150: "https://bydthanhcong.vn/wp-content/uploads/2026/01/150.png",
@@ -1239,8 +1242,6 @@ var MONEY_IMG = {
   "TaiNghe": "https://bydthanhcong.vn/wp-content/uploads/2026/01/tainghe.png"
 };
 
-// --- CẤU HÌNH GIÁ TRỊ (Khớp thứ tự với segments) ---
-// Sửa lỗi: Dùng chuỗi ký tự cho quà hiện vật
 var LIXI_MAP = [100, 150, 200, 250, 500, "Vali", "TaiNghe"];
 
 var mouthX = 0.50, mouthY = 0.48, mouthW = "56%", mouthH = "18%";
@@ -1294,7 +1295,6 @@ function NA_burst(win){
 
   var url = MONEY_IMG[win] || "";
   
-  // Xử lý ảnh preview
   if (url) {
     NApPreview.src = url;
     NApPreview.style.opacity = "1";
@@ -1303,7 +1303,6 @@ function NA_burst(win){
     NApPreview.style.opacity = "0";
   }
 
-  // Xử lý ảnh bay ra từ bao lì xì
   if (url) {
     var im = document.createElement('img');
     im.src = url;
@@ -1311,7 +1310,6 @@ function NA_burst(win){
     NApopCash.appendChild(im);
   }
 
-  // Chỉ hiệu ứng bay tiền nếu trúng tiền (win là số)
   if (typeof win === 'number') {
       setTimeout(function(){
         var pos = NA_getMouthPos();
@@ -1339,7 +1337,6 @@ function NA_burst(win){
           NAmoneyLayer.appendChild(img);
         }
         
-        // Thêm coin và spark tương tự...
         for(i=0;i<coinCount;i++){
            var c = document.createElement('div');
            c.className = 'NAcoin';
@@ -1365,7 +1362,6 @@ function NA_burst(win){
         setTimeout(NA_clearFX, 2600);
       }, 640);
   } else {
-      // Nếu là hiện vật, chỉ hiện hiệu ứng spark nhẹ hoặc kết thúc sớm
       setTimeout(NA_clearFX, 2000);
   }
 }
@@ -1379,13 +1375,10 @@ function NA_makeVoucherCode(){
 if (NAclose) NAclose.addEventListener('click', function(){ NA_clearFX(); NA_hide(); });
 if (NAcloseInfoBtn) NAcloseInfoBtn.addEventListener('click', function(){ NA_clearFX(); NA_hide(); });
 
-// Hàm định dạng hiển thị kết quả
 function qcadsFormatResult(win) {
     if (typeof win === 'number') {
-        // Nếu là số thì nhân 1000 và thêm "đ"
         return (win * 1000).toLocaleString('vi-VN') + "đ";
     } else {
-        // Nếu là chữ (Vali, TaiNghe) thì trả về tên hiển thị đẹp
         if (win === "Vali") return "Vali Cao Cấp";
         if (win === "TaiNghe") return "Tai Nghe Airpod";
         return win;
@@ -1401,7 +1394,6 @@ if (NAclaimBtn) NAclaimBtn.addEventListener('click', function(){
   if (nameEl) nameEl.innerText = String(window.pendingUserName || "");
   if (codeEl) codeEl.innerText = String(window.NA_LAST_CODE || "NA000000");
   
-  // Sửa lỗi hiển thị ở màn hình cuối cùng
   if (moneyEl) {
       moneyEl.innerText = qcadsFormatResult(window.NA_LAST_WIN);
   }
@@ -1561,75 +1553,108 @@ function spin() {
   if (spinning) return;
   spinning = true;
 
-  qcadsAllocPrizeFromApi()
-    .then(function(resp){
-      if (!resp || resp.success !== true) {
-        spinning = false;
-        qcadsShowAlert((resp && resp.message) ? resp.message : "Lỗi kết nối kho quà (API).");
-        return;
-      }
+  var currentDeg = 0;       
+  var speed = 25;           
+  var isApiReturned = false; 
+  var apiResult = null;     
 
+  function fakeSpinLoop() {
+    if (isApiReturned) return;
+
+    currentDeg += speed; 
+    
+    ctx.clearRect(0, 0, size, size);
+    ctx.save();
+    ctx.translate(center, center);
+    ctx.rotate(currentDeg * Math.PI / 180); 
+    ctx.translate(-center, -center);
+    drawWheel();
+    ctx.restore();
+
+    requestAnimationFrame(fakeSpinLoop);
+  }
+  
+  requestAnimationFrame(fakeSpinLoop);
+
+  qcadsAllocPrizeFromApi()
+    .then(function(resp) {
+      if (!resp || resp.success !== true) {
+        throw new Error((resp && resp.message) ? resp.message : "Lỗi kết nối.");
+      }
+      
       var selectedIndex = Number(resp.prize_id);
       if (!isFinite(selectedIndex) || selectedIndex < 0 || selectedIndex >= segments.length) {
-        spinning = false;
-        qcadsShowAlert("Dữ liệu prize_id không hợp lệ.");
-        return;
+        throw new Error("Dữ liệu giải thưởng không hợp lệ.");
       }
 
-      var segmentDegree = 360 / segments.length;
-      var segmentCenterDegree = selectedIndex * segmentDegree + segmentDegree / 2;
-      var spins = Math.floor(Math.random() * 4 + 4);
-      var finalDegree = spins * 360 + (360 + 270 - segmentCenterDegree) % 360;
-      var finalRad = finalDegree * Math.PI / 180;
-      var duration = 4000;
-      var start = null;
+      apiResult = { 
+        index: selectedIndex, 
+        winMoney: LIXI_MAP[selectedIndex], 
+        vcode: window.pendingCouponCode || NA_makeVoucherCode()
+      };
+      
+      if (apiResult.winMoney === undefined) apiResult.winMoney = 100;
 
-      function rotateWheel(timestamp) {
-        if (!start) start = timestamp;
-        var progress = timestamp - start;
-        var easing = 1 - Math.pow(1 - progress / duration, 3);
-        spinAngle = finalRad * easing;
+      isApiReturned = true;
+      startDeceleration(currentDeg, selectedIndex);
+    })
+    .catch(function(err) {
+      isApiReturned = true;
+      spinning = false;
+      qcadsShowAlert(err.message || "Lỗi kết nối kho quà. Vui lòng thử lại.");
+      drawWheel();
+    });
+
+  function startDeceleration(startDegree, targetIndex) {
+    var segmentArc = 360 / segments.length;
+    var prizeCenter = (targetIndex * segmentArc) + (segmentArc / 2);
+    var targetRotation = 270 - prizeCenter;
+    
+    var currentMod = startDegree % 360;
+    var distToTarget = targetRotation - currentMod;
+    if (distToTarget < 0) distToTarget += 360;
+    
+    var extraSpins = 360 * 4;
+    var totalDistance = distToTarget + extraSpins;
+    
+    var finalDegree = startDegree + totalDistance;
+    var duration = 4000; 
+    var startTimestamp = null;
+
+    function rotateDecelerate(timestamp) {
+      if (!startTimestamp) startTimestamp = timestamp;
+      var progress = timestamp - startTimestamp;
+      
+      if (progress < duration) {
+        var ease = 1 - Math.pow(1 - progress / duration, 3); 
+        var currentAnimDeg = startDegree + (totalDistance * ease);
 
         ctx.clearRect(0, 0, size, size);
         ctx.save();
         ctx.translate(center, center);
-        ctx.rotate(spinAngle);
+        ctx.rotate(currentAnimDeg * Math.PI / 180);
         ctx.translate(-center, -center);
         drawWheel();
         ctx.restore();
 
-        if (progress < duration) {
-          requestAnimationFrame(rotateWheel);
-        } else {
-          window.pendingSegment = segments[selectedIndex];
-          spinning = false;
+        requestAnimationFrame(rotateDecelerate);
+      } else {
+        spinning = false;
+        
+        window.pendingSegment = segments[targetIndex];
+        window.NA_LAST_WIN = apiResult.winMoney;
+        window.NA_LAST_CODE = apiResult.vcode;
 
-          var winMoney = LIXI_MAP[selectedIndex];
-          // Nếu winMoney là undefined thì gán mặc định 100 (phòng hờ)
-          if (winMoney === undefined) winMoney = 100;
+        NA_showLixiView();
+        NAwinValue.innerText = "Anh/Chị nhận được " + qcadsFormatResult(apiResult.winMoney);
+        NAvoucherCode.innerText = apiResult.vcode;
 
-          var vcode = window.pendingCouponCode || NA_makeVoucherCode();
-          window.NA_LAST_WIN = winMoney;
-          window.NA_LAST_CODE = vcode;
-
-          NA_showLixiView();
-          
-          // SỬA LỖI HIỂN THỊ KẾT QUẢ Ở POPUP
-          NAwinValue.innerText = "Anh/Chị nhận được " + qcadsFormatResult(winMoney);
-          
-          NAvoucherCode.innerText = vcode;
-
-          NA_show();
-          setTimeout(function(){ NA_burst(winMoney); }, 160);
-        }
+        NA_show();
+        setTimeout(function(){ NA_burst(apiResult.winMoney); }, 160);
       }
-
-      requestAnimationFrame(rotateWheel);
-    })
-    .catch(function(){
-      spinning = false;
-      qcadsShowAlert("Lỗi kết nối kho quà (API). Vui lòng thử lại.");
-    });
+    }
+    requestAnimationFrame(rotateDecelerate);
+  }
 }
 
 function qcadsBoot() {
