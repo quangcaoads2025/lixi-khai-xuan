@@ -215,6 +215,32 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script type="text/javascript">
+   document.addEventListener('contextmenu', e => e.preventDefault());
+
+document.onkeydown = function(e) {
+    if (
+        e.keyCode === 123 || 
+        (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && ['U','S'].includes(e.key.toUpperCase()))
+    ) {
+        return false;
+    }
+};
+
+(function() {
+    const element = new Image();
+    Object.defineProperty(element, 'id', {
+        get: function() {
+            window.location.reload();
+        }
+    });
+
+    setInterval(() => {
+        console.log(element);
+        console.clear();
+    }, 2000);
+})();
+ 
 var spinFrameId; 
 var _ept="https://script.google.com/macros/s/AKfycbzx6ZPYtmch6K3s3jirPhnssXR8B_hWJot9-IucA7AzSZ_sTJhTjY-dDuOjdxMWWrovFw/exec";
 function qcadsShowAlert(t){var b=document.getElementById('qcadsAlert'),txt=document.getElementById('qcadsAlertText');if(b&&txt){txt.innerText=t||'';b.style.display='flex';}}
